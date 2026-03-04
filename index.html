@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Marry Me?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #fff5f9 50%, #ffffff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            max-width: 800px;
+            z-index: 10;
+            position: relative;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            animation: slideInFromBottom 0.8s ease-out;
+        }
+
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #d63384;
+            margin-bottom: 40px;
+            font-weight: 400;
+            line-height: 1.4;
+            text-shadow: 2px 2px 4px rgba(214, 51, 132, 0.1);
+            letter-spacing: 1px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .phase-image {
+            max-width: 300px;
+            width: auto;
+            height: auto;
+            margin: 0 auto 30px auto;
+            display: block;
+            animation: fadeInScale 1s ease-out;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(214, 51, 132, 0.2);
+            border: 2px solid rgba(255, 107, 157, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .phase-image:hover {
+            transform: scale(1.05);
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: row;
+            gap: 60px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px;
+            flex-wrap: nowrap;
+            position: relative;
+        }
+
+        button {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 1.5rem;
+            padding: 18px 45px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-weight: 500;
+            position: relative;
+            display: inline-block;
+            white-space: nowrap;
+            margin: 0 25px;
+        }
+
+        .yes-button {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+            color: white;
+            z-index: 100;
+            order: 1;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            flex-grow: 0;
+            will-change: auto;
+        }
+
+        .yes-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .yes-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .yes-button:hover {
+            transform: none;
+            box-shadow: 0 8px 30px rgba(255, 107, 157, 0.6);
+        }
+
+        .no-button {
+            background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
+            color: white;
+            position: relative;
+            z-index: 101;
+            order: 2;
+        }
+        
+        .no-button.evasive {
+            position: absolute;
+            z-index: 101;
+        }
+
+        .no-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Heart animation */
+        .heart {
+            position: absolute;
+            font-size: 30px;
+            color: #ff6b9d;
+            pointer-events: none;
+            animation: float-up 2s ease-out forwards;
+            z-index: 200;
+        }
+
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) scale(1.5);
+            }
+        }
+
+        /* Phase 2 - Final Message */
+        .final-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffeef8 0%, #fff5f9 30%, #fff0f5 60%, #ffffff 100%);
+            background-size: 200% 200%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            padding: 40px;
+            animation: backgroundShift 10s ease infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .final-message.active {
+            display: flex;
+        }
+
+        .final-message img {
+            max-width: 400px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 30px;
+            animation: fadeInScale 1s ease-out;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(214, 51, 132, 0.3);
+            border: 3px solid rgba(255, 107, 157, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .final-message img:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .final-message h1 {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #d63384, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+            margin-bottom: 40px;
+            animation: fade-in 1s ease-in;
+        }
+
+        .countdown {
+            font-size: 2rem;
+            color: #ff6b9d;
+            margin-top: 30px;
+            font-weight: 300;
+            animation: fade-in 1.5s ease-in;
+        }
+
+        .countdown-item {
+            display: inline-block;
+            margin: 0 15px;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 240, 245, 0.9));
+            border: 2px solid rgba(214, 51, 132, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(214, 51, 132, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .countdown-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(214, 51, 132, 0.3);
+            border-color: rgba(214, 51, 132, 0.5);
+        }
+
+        .countdown-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            background: linear-gradient(135deg, #d63384, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .countdown-label {
+            font-size: 1rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Confetti hearts */
+        .confetti-heart {
+            position: fixed;
+            font-size: 20px;
+            color: #ff6b9d;
+            pointer-events: none;
+            z-index: 500;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* Hide phase 2 initially */
+        .phase-1, .phase-2 {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .phase-2 {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .phase-2.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .phase-1 {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .phase-1.hidden {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        /* Floating hearts animation */
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .floating-heart {
+            position: fixed;
+            font-size: 20px;
+            color: rgba(255, 107, 157, 0.3);
+            pointer-events: none;
+            animation: float 15s infinite linear;
+            z-index: 1;
+        }
+
+        /* Sparkle effect */
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkle 1.5s infinite;
+        }
+
+        /* Particle effect */
+        .particle {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 107, 157, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 20s infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Confetti celebration */
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .celebration-confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: confettiFall 4s linear forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Phase 1: Fiancée Question -->
+    <div class="container phase-1" id="phase1">
+        <img src="1bb73ff6-fd52-4a90-a506-e181d988133c.png" alt="Romantic couple illustration" class="phase-image">
+        <h1>Mary Justine Uy, is Marc Francis Alhambra your current fiancée?</h1>
+        <div class="button-container">
+            <button class="yes-button" id="yes1">Yes</button>
+            <button class="no-button" id="no1">No</button>
+        </div>
+    </div>
+
+    <!-- Phase 2: Wedding Date Question -->
+    <div class="container phase-2" id="phase2">
+        <img src="1bb73ff6-fd52-4a90-a506-e181d988133c.png" alt="Romantic couple illustration" class="phase-image">
+        <h1>June 11, 2026 — the day you become Mrs. Alhambra.<br>Still sure about this lifetime subscription?</h1>
+        <div class="button-container">
+            <button class="yes-button" id="yes2">Yes, lifetime plan</button>
+            <button class="no-button" id="no2">No refunds</button>
+        </div>
+    </div>
+
+    <!-- Final Message -->
+    <div class="final-message" id="finalMessage">
+        <img src="wedding-image.png" alt="Wedding celebration">
+        <h1>I love you forever, Mary Justine Uy!</h1>
+        <div class="countdown" id="countdown">
+            <div class="countdown-item">
+                <span class="countdown-number" id="days">0</span>
+                <span class="countdown-label">Days</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="hours">0</span>
+                <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="minutes">0</span>
+                <span class="countdown-label">Minutes</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="seconds">0</span>
+                <span class="countdown-label">Seconds</span>
+            </div>
+        </div>
+        <audio id="backgroundMusic" loop>
+            <source src="romantic-music.mp3" type="audio/mpeg">
+            <!-- Placeholder - user can add their own music file -->
+        </audio>
+    </div>
+
+    <script>
+        // Floating hearts background animation
+        function createFloatingHearts() {
+            const heartSymbols = ['❤️', '💕', '💖', '💗', '💓'];
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (15 + Math.random() * 15) + 'px';
+                heart.style.animationDuration = (10 + Math.random() * 10) + 's';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 20000);
+            }, 2000);
+        }
+
+        // Particle effect background
+        function createParticles() {
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 25000);
+            }, 1000);
+        }
+
+        // Sparkle effect for buttons
+        function createSparkles(element) {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    const rect = element.getBoundingClientRect();
+                    sparkle.style.left = (Math.random() * rect.width) + 'px';
+                    sparkle.style.top = (Math.random() * rect.height) + 'px';
+                    sparkle.style.animationDelay = Math.random() * 0.5 + 's';
+                    element.style.position = 'relative';
+                    element.appendChild(sparkle);
+                    setTimeout(() => sparkle.remove(), 1500);
+                }, i * 200);
+            }
+        }
+
+        // Celebration confetti
+        function createCelebrationConfetti() {
+            const colors = ['#ff6b9d', '#ff8fab', '#d63384', '#ffc0cb', '#ffffff'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'celebration-confetti';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.width = (8 + Math.random() * 8) + 'px';
+                    confetti.style.height = confetti.style.width;
+                    confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 20);
+            }
+        }
+
+        // Initialize background effects
+        window.addEventListener('load', () => {
+            createFloatingHearts();
+            createParticles();
+        });
+
+        // Add sparkles to Yes buttons on hover
+        document.addEventListener('DOMContentLoaded', () => {
+            const yesButtons = document.querySelectorAll('.yes-button');
+            yesButtons.forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    createSparkles(button);
+                });
+            });
+        });
+
+        // No button evasive behavior
+        function makeButtonEvasive(buttonId) {
+            const button = document.getElementById(buttonId);
+            let speed = 50; // Initial movement speed
+            let baseDistance = 100; // Base distance to jump
+            let chaseCount = 0; // Track how many times cursor has chased the button
+            let isEvasive = false; // Track if button has started evasive mode
+            let lastMoveTime = 0; // Track last movement time
+            let originalPosition = null; // Store original position
+            
+            // Get the container (red box) - parent of button-container
+            const container = button.closest('.container');
+            const buttonContainer = button.parentElement; // button-container
+            
+            // Get the corresponding Yes button (no1 -> yes1, no2 -> yes2)
+            const yesButtonId = buttonId.replace('no', 'yes');
+            const yesButton = document.getElementById(yesButtonId);
+            
+            // Prevent keyboard focus
+            button.setAttribute('tabindex', '-1');
+            
+            // Function to check and avoid collision with Yes button
+            function avoidYesButtonCollision(newX, newY, buttonRect) {
+                if (!yesButton || !isEvasive) return { x: newX, y: newY };
+                
+                const yesButtonRect = yesButton.getBoundingClientRect();
+                const buttonContainerRect = buttonContainer ? buttonContainer.getBoundingClientRect() : null;
+                
+                if (!buttonContainerRect) return { x: newX, y: newY };
+                
+                // Convert Yes button position to relative coordinates
+                const yesButtonRelativeX = yesButtonRect.left - buttonContainerRect.left;
+                const yesButtonRelativeY = yesButtonRect.top - buttonContainerRect.top;
+                
+                // Calculate No button's new position bounds
+                const noButtonLeft = newX;
+                const noButtonRight = newX + buttonRect.width;
+                const noButtonTop = newY;
+                const noButtonBottom = newY + buttonRect.height;
+                
+                // Calculate Yes button bounds
+                const yesButtonLeft = yesButtonRelativeX;
+                const yesButtonRight = yesButtonRelativeX + yesButtonRect.width;
+                const yesButtonTop = yesButtonRelativeY;
+                const yesButtonBottom = yesButtonRelativeY + yesButtonRect.height;
+                
+                // Check for overlap with padding
+                const padding = 10; // Minimum distance between buttons
+                const overlapX = (noButtonRight + padding > yesButtonLeft) && (noButtonLeft - padding < yesButtonRight);
+                const overlapY = (noButtonBottom + padding > yesButtonTop) && (noButtonTop - padding < yesButtonBottom);
+                
+                if (overlapX && overlapY) {
+                    // Collision detected - move away from Yes button
+                    const noButtonCenterX = newX + buttonRect.width / 2;
+                    const noButtonCenterY = newY + buttonRect.height / 2;
+                    const yesButtonCenterX = yesButtonRelativeX + yesButtonRect.width / 2;
+                    const yesButtonCenterY = yesButtonRelativeY + yesButtonRect.height / 2;
+                    
+                    // Calculate direction away from Yes button
+                    const dx = noButtonCenterX - yesButtonCenterX;
+                    const dy = noButtonCenterY - yesButtonCenterY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance > 0) {
+                        // Move away from Yes button
+                        const pushDistance = (yesButtonRect.width + buttonRect.width) / 2 + padding;
+                        const angle = Math.atan2(dy, dx);
+                        newX = yesButtonCenterX + Math.cos(angle) * pushDistance - buttonRect.width / 2;
+                        newY = yesButtonCenterY + Math.sin(angle) * pushDistance - buttonRect.height / 2;
+                    } else {
+                        // If centers overlap, move to a random position away from Yes button
+                        const randomAngle = Math.random() * Math.PI * 2;
+                        const pushDistance = (yesButtonRect.width + buttonRect.width) / 2 + padding + 50;
+                        newX = yesButtonCenterX + Math.cos(randomAngle) * pushDistance - buttonRect.width / 2;
+                        newY = yesButtonCenterY + Math.sin(randomAngle) * pushDistance - buttonRect.height / 2;
+                    }
+                }
+                
+                return { x: newX, y: newY };
+            }
+            
+            // Store original position
+            function storeOriginalPosition() {
+                if (!originalPosition) {
+                    const buttonRect = button.getBoundingClientRect();
+                    const buttonContainerRect = buttonContainer ? buttonContainer.getBoundingClientRect() : null;
+                    
+                    // Calculate position relative to button-container (which has position: relative)
+                    if (buttonContainerRect) {
+                        originalPosition = {
+                            left: buttonRect.left - buttonContainerRect.left,
+                            top: buttonRect.top - buttonContainerRect.top
+                        };
+                    } else {
+                        // Fallback
+                        const containerRect = container ? container.getBoundingClientRect() : null;
+                        if (containerRect) {
+                            originalPosition = {
+                                left: buttonRect.left - containerRect.left,
+                                top: buttonRect.top - containerRect.top
+                            };
+                        } else {
+                            originalPosition = {
+                                left: buttonRect.left,
+                                top: buttonRect.top
+                            };
+                        }
+                    }
+                }
+            }
+            
+            // Reset button to original position
+            function resetToOriginalPosition() {
+                // Store original position if not already stored
+                if (!originalPosition) {
+                    storeOriginalPosition();
+                }
+                
+                if (originalPosition) {
+                    // Ensure placeholder exists to maintain layout
+                    let placeholder = buttonContainer.querySelector('.no-button-placeholder');
+                    if (!placeholder) {
+                        // Create placeholder if it doesn't exist
+                        placeholder = document.createElement('div');
+                        placeholder.className = 'no-button-placeholder';
+                        const buttonRect = button.getBoundingClientRect();
+                        const computedStyle = window.getComputedStyle(button);
+                        placeholder.style.width = buttonRect.width + 'px';
+                        placeholder.style.height = buttonRect.height + 'px';
+                        placeholder.style.margin = computedStyle.margin;
+                        placeholder.style.visibility = 'hidden';
+                        placeholder.style.pointerEvents = 'none';
+                        placeholder.style.flexShrink = '0';
+                        placeholder.style.flexGrow = '0';
+                        placeholder.style.order = '2'; // Match No button's order
+                        button.parentNode.insertBefore(placeholder, button.nextSibling);
+                    }
+                    
+                    // Keep absolute positioning but move back to original position
+                    if (!isEvasive) {
+                        isEvasive = true;
+                        button.classList.add('evasive');
+                        // Ensure button-container has position relative
+                        if (buttonContainer && window.getComputedStyle(buttonContainer).position === 'static') {
+                            buttonContainer.style.position = 'relative';
+                        }
+                    }
+                    
+                    button.style.transition = 'all 0.3s ease-out';
+                    button.style.left = originalPosition.left + 'px';
+                    button.style.top = originalPosition.top + 'px';
+                    
+                    // Reset speed so it can move normally again
+                    speed = 50;
+                    baseDistance = 100;
+                    chaseCount = 0; // Reset chase count
+                }
+            }
+            
+            // Store original position on load
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    storeOriginalPosition();
+                }, 100);
+            });
+            
+            // Expose reset function
+            button.resetToOriginal = resetToOriginalPosition;
+            
+            // Track mouse position
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+            
+            // Function to get container boundaries (relative to button-container)
+            function getContainerBounds() {
+                if (!buttonContainer) {
+                    // Fallback to container if button-container not found
+                    if (!container) {
+                        const padding = 20;
+                        return {
+                            minX: padding,
+                            minY: padding,
+                            maxX: window.innerWidth - padding,
+                            maxY: window.innerHeight - padding
+                        };
+                    }
+                    const containerRect = container.getBoundingClientRect();
+                    const padding = 10;
+                    const buttonRect = button.getBoundingClientRect();
+                    return {
+                        minX: padding,
+                        minY: padding,
+                        maxX: containerRect.width - buttonRect.width - padding,
+                        maxY: containerRect.height - buttonRect.height - padding
+                    };
+                }
+                const buttonContainerRect = buttonContainer.getBoundingClientRect();
+                const padding = 10; // Small padding inside button-container
+                const buttonRect = button.getBoundingClientRect();
+                // Return relative coordinates (relative to button-container's top-left)
+                return {
+                    minX: padding,
+                    minY: padding,
+                    maxX: buttonContainerRect.width - buttonRect.width - padding,
+                    maxY: buttonContainerRect.height - buttonRect.height - padding
+                };
+            }
+            
+            // Function to initialize absolute positioning
+            function initializeAbsolutePosition() {
+                if (!isEvasive) {
+                    const buttonRect = button.getBoundingClientRect();
+                    const computedStyle = window.getComputedStyle(button);
+                    
+                    // Create placeholder FIRST to maintain flex layout before button becomes absolute
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'no-button-placeholder';
+                    placeholder.style.width = buttonRect.width + 'px';
+                    placeholder.style.height = buttonRect.height + 'px';
+                    placeholder.style.margin = computedStyle.margin;
+                    placeholder.style.visibility = 'hidden';
+                    placeholder.style.pointerEvents = 'none';
+                    placeholder.style.flexShrink = '0';
+                    placeholder.style.flexGrow = '0';
+                    placeholder.style.order = '2'; // Match No button's order
+                    // Insert placeholder right after button to maintain position
+                    button.parentNode.insertBefore(placeholder, button.nextSibling);
+                    
+                    // Now make button absolute
+                    isEvasive = true;
+                    button.classList.add('evasive');
+                    
+                    // Set initial position relative to button-container
+                    const buttonContainerRect = buttonContainer ? buttonContainer.getBoundingClientRect() : null;
+                    if (buttonContainerRect) {
+                        button.style.left = (buttonRect.left - buttonContainerRect.left) + 'px';
+                        button.style.top = (buttonRect.top - buttonContainerRect.top) + 'px';
+                    } else {
+                        // Fallback to container
+                        const containerRect = container ? container.getBoundingClientRect() : null;
+                        if (containerRect) {
+                            button.style.left = (buttonRect.left - containerRect.left) + 'px';
+                            button.style.top = (buttonRect.top - containerRect.top) + 'px';
+                        }
+                    }
+                    // Ensure button-container has position relative (it should already have it from CSS)
+                    if (buttonContainer && window.getComputedStyle(buttonContainer).position === 'static') {
+                        buttonContainer.style.position = 'relative';
+                    }
+                }
+            }
+            
+            // Function to move button away from cursor
+            function moveButtonAway() {
+                if (!isEvasive) return; // Don't move until evasive mode is activated
+                
+                const buttonRect = button.getBoundingClientRect();
+                const buttonContainerRect = buttonContainer ? buttonContainer.getBoundingClientRect() : null;
+                const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+                const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+                
+                // Calculate distance from cursor to button center
+                const distanceX = mouseX - buttonCenterX;
+                const distanceY = mouseY - buttonCenterY;
+                const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+                
+                // Detection radius - only move when cursor is close (200px)
+                const detectionRadius = 200;
+                
+                // Get container boundaries (relative to button-container)
+                const bounds = getContainerBounds();
+                const minX = bounds.minX;
+                const minY = bounds.minY;
+                const maxX = bounds.maxX;
+                const maxY = bounds.maxY;
+                
+                // If cursor is approaching, move it away IMMEDIATELY
+                if (distance < detectionRadius) {
+                    chaseCount++;
+                    
+                    // Calculate urgency based on distance (closer = more urgent)
+                    const urgency = 1 - (distance / detectionRadius);
+                    
+                    // If cursor is VERY close, teleport immediately to random location within button-container
+                    if (distance < 100) {
+                        let newX = minX + Math.random() * (maxX - minX);
+                        let newY = minY + Math.random() * (maxY - minY);
+                        // Avoid collision with Yes button
+                        const collisionCheck = avoidYesButtonCollision(newX, newY, buttonRect);
+                        newX = collisionCheck.x;
+                        newY = collisionCheck.y;
+                        // Clamp to bounds
+                        newX = Math.max(minX, Math.min(newX, maxX));
+                        newY = Math.max(minY, Math.min(newY, maxY));
+                        button.style.transition = 'none'; // Instant movement
+                        button.style.left = newX + 'px';
+                        button.style.top = newY + 'px';
+                        speed = 1000; // Maximum speed
+                        baseDistance = 400;
+                        return;
+                    }
+                    
+                    // Calculate new position (opposite direction from cursor with high randomness)
+                    const baseAngle = Math.atan2(distanceY, distanceX);
+                    const randomAngle = (Math.random() - 0.5) * 1.5; // High randomness for erratic movement
+                    const angle = baseAngle + Math.PI + randomAngle; // Opposite direction + randomness
+                    
+                    // Increase jump distance significantly based on urgency
+                    const jumpDistance = baseDistance + (detectionRadius - distance) * 2 + Math.random() * 150;
+                    
+                    // Calculate new center position (absolute)
+                    let newCenterX = buttonCenterX + Math.cos(angle) * jumpDistance;
+                    let newCenterY = buttonCenterY + Math.sin(angle) * jumpDistance;
+                    
+                    // Convert center position to top-left position (absolute)
+                    let newX = newCenterX - buttonRect.width / 2;
+                    let newY = newCenterY - buttonRect.height / 2;
+                    
+                    // Convert to relative position within button-container
+                    if (buttonContainerRect) {
+                        newX = newX - buttonContainerRect.left;
+                        newY = newY - buttonContainerRect.top;
+                    } else {
+                        // Fallback to container
+                        const containerRect = container ? container.getBoundingClientRect() : null;
+                        if (containerRect) {
+                            newX = newX - containerRect.left;
+                            newY = newY - containerRect.top;
+                        }
+                    }
+                    
+                    // Avoid collision with Yes button (like opposite magnets)
+                    const collisionCheck = avoidYesButtonCollision(newX, newY, buttonRect);
+                    newX = collisionCheck.x;
+                    newY = collisionCheck.y;
+                    
+                    // Ensure button stays within container boundaries
+                    // If it would go outside, bounce it to a random position within bounds
+                    if (newX < minX || newX > maxX || newY < minY || newY > maxY) {
+                        // If going out of bounds, move to a random safe position within container
+                        // But still avoid Yes button
+                        let safeX = minX + Math.random() * (maxX - minX);
+                        let safeY = minY + Math.random() * (maxY - minY);
+                        const safeCheck = avoidYesButtonCollision(safeX, safeY, buttonRect);
+                        newX = safeCheck.x;
+                        newY = safeCheck.y;
+                        // Clamp again after collision avoidance
+                        newX = Math.max(minX, Math.min(newX, maxX));
+                        newY = Math.max(minY, Math.min(newY, maxY));
+                    } else {
+                        // Clamp position to stay within container
+                        newX = Math.max(minX, Math.min(newX, maxX));
+                        newY = Math.max(minY, Math.min(newY, maxY));
+                        // Check collision again after clamping
+                        const finalCheck = avoidYesButtonCollision(newX, newY, buttonRect);
+                        newX = finalCheck.x;
+                        newY = finalCheck.y;
+                        // Final clamp
+                        newX = Math.max(minX, Math.min(newX, maxX));
+                        newY = Math.max(minY, Math.min(newY, maxY));
+                    }
+                    
+                    // Increase speed and distance as chase continues - much faster
+                    speed = Math.min(speed + urgency * 5, 800);
+                    baseDistance = Math.min(baseDistance + urgency * 4, 450);
+                    
+                    // No transition for instant pop-out movement
+                    button.style.transition = 'none';
+                    button.style.left = newX + 'px';
+                    button.style.top = newY + 'px';
+                    
+                    lastMoveTime = Date.now();
+                } else {
+                    // Reset speed gradually when cursor moves away
+                    if (speed > 50) {
+                        speed = Math.max(50, speed - 2);
+                    }
+                    if (baseDistance > 100) {
+                        baseDistance = Math.max(100, baseDistance - 2);
+                    }
+                }
+            }
+            
+            // Check if cursor is approaching and activate evasive mode
+            function checkAndActivate() {
+                const buttonRect = button.getBoundingClientRect();
+                const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+                const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+                const distanceX = mouseX - buttonCenterX;
+                const distanceY = mouseY - buttonCenterY;
+                const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+                
+                // Only activate evasive mode when cursor is close (200px)
+                const activationRadius = 200;
+                
+                if (distance < activationRadius && !isEvasive) {
+                    initializeAbsolutePosition();
+                }
+                
+                // Only move if cursor is near AND evasive mode is active
+                if (isEvasive && distance < activationRadius) {
+                    moveButtonAway();
+                } else if (isEvasive && distance >= activationRadius) {
+                    // Cursor moved away - reset speed gradually
+                    if (speed > 50) {
+                        speed = Math.max(50, speed - 2);
+                    }
+                    if (baseDistance > 100) {
+                        baseDistance = Math.max(100, baseDistance - 2);
+                    }
+                }
+            }
+            
+            // Teleport function for immediate escape - within container only
+            function teleportAway() {
+                initializeAbsolutePosition();
+                const bounds = getContainerBounds();
+                const buttonRect = button.getBoundingClientRect();
+                
+                // Try to find a safe position that avoids Yes button
+                let newX, newY;
+                let attempts = 0;
+                let safePosition = false;
+                
+                while (!safePosition && attempts < 10) {
+                    // Use relative coordinates (already relative to container)
+                    newX = bounds.minX + Math.random() * (bounds.maxX - bounds.minX);
+                    newY = bounds.minY + Math.random() * (bounds.maxY - bounds.minY);
+                    
+                    // Check collision with Yes button
+                    const collisionCheck = avoidYesButtonCollision(newX, newY, buttonRect);
+                    if (Math.abs(collisionCheck.x - newX) < 5 && Math.abs(collisionCheck.y - newY) < 5) {
+                        // Position is safe (no collision)
+                        safePosition = true;
+                        newX = collisionCheck.x;
+                        newY = collisionCheck.y;
+                    } else {
+                        // Use the adjusted position
+                        newX = collisionCheck.x;
+                        newY = collisionCheck.y;
+                        safePosition = true; // Use adjusted position
+                    }
+                    attempts++;
+                }
+                
+                // Clamp to bounds
+                newX = Math.max(bounds.minX, Math.min(newX, bounds.maxX));
+                newY = Math.max(bounds.minY, Math.min(newY, bounds.maxY));
+                
+                button.style.transition = 'none';
+                button.style.left = newX + 'px';
+                button.style.top = newY + 'px';
+            }
+            
+            // Also move on mouse move near button - immediate escape
+            button.addEventListener('mouseenter', teleportAway);
+            
+            // Move on mouse move over button
+            button.addEventListener('mousemove', teleportAway);
+            
+            // Move immediately when mouse moves - check for activation and movement
+            document.addEventListener('mousemove', checkAndActivate);
+            
+            // Check VERY frequently for instant response
+            setInterval(checkAndActivate, 10);
+            
+            // Prevent click - teleport immediately
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                teleportAway();
+                return false;
+            });
+            
+            // Also prevent mousedown
+            button.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                teleportAway();
+                return false;
+            });
+            
+            // Prevent focus via keyboard
+            button.addEventListener('focus', () => {
+                button.blur();
+            });
+            
+            // Keep button within container bounds on window resize
+            window.addEventListener('resize', () => {
+                if (isEvasive) {
+                    const bounds = getContainerBounds();
+                    
+                    let currentX = parseFloat(button.style.left) || 0;
+                    let currentY = parseFloat(button.style.top) || 0;
+                    
+                    currentX = Math.max(bounds.minX, Math.min(currentX, bounds.maxX));
+                    currentY = Math.max(bounds.minY, Math.min(currentY, bounds.maxY));
+                    
+                    button.style.left = currentX + 'px';
+                    button.style.top = currentY + 'px';
+                }
+            });
+        }
+        
+        // Heart burst animation
+        function createHeartBurst(x, y) {
+            const heartSymbols = ['❤️', '💕', '💖', '💗', '💓', '💝'];
+            
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                
+                const angle = (Math.PI * 2 * i) / 30;
+                const distance = 100 + Math.random() * 50;
+                const startX = x + Math.cos(angle) * distance;
+                const startY = y + Math.sin(angle) * distance;
+                
+                heart.style.left = startX + 'px';
+                heart.style.top = startY + 'px';
+                
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 2000);
+            }
+        }
+        
+        // Confetti hearts animation
+        function createConfettiHearts() {
+            const heartSymbols = ['❤️', '💕', '💖', '💗', '💓', '💝'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'confetti-heart';
+                    heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.top = '-50px';
+                    heart.style.animationDelay = Math.random() * 0.5 + 's';
+                    
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 3000);
+                }, i * 100);
+            }
+        }
+        
+        // Countdown timer
+        function updateCountdown() {
+            const targetDate = new Date('2026-06-11T00:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
+        
+        // Initialize evasive buttons first to get reset functions
+        makeButtonEvasive('no1');
+        makeButtonEvasive('no2');
+        
+        // Get references to No buttons for reset functionality
+        const no1Button = document.getElementById('no1');
+        const no2Button = document.getElementById('no2');
+        
+        // Phase 1 Yes button
+        const yes1Button = document.getElementById('yes1');
+        yes1Button.addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            
+            createHeartBurst(x, y);
+            createCelebrationConfetti();
+            
+            setTimeout(() => {
+                document.getElementById('phase1').classList.add('hidden');
+                document.getElementById('phase2').classList.add('active');
+            }, 500);
+        });
+        
+        // Reset No button when hovering or focusing on Yes button (Phase 1)
+        yes1Button.addEventListener('mouseenter', function() {
+            if (no1Button && no1Button.resetToOriginal) {
+                no1Button.resetToOriginal();
+            }
+        });
+        
+        yes1Button.addEventListener('focus', function() {
+            if (no1Button && no1Button.resetToOriginal) {
+                no1Button.resetToOriginal();
+            }
+        });
+        
+        // Phase 2 Yes button
+        const yes2Button = document.getElementById('yes2');
+        yes2Button.addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            
+            createHeartBurst(x, y);
+            createConfettiHearts();
+            createCelebrationConfetti();
+            
+            setTimeout(() => {
+                document.getElementById('phase2').classList.remove('active');
+                document.getElementById('finalMessage').classList.add('active');
+                
+                // Start countdown
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+                
+                // Play background music (if file exists)
+                const music = document.getElementById('backgroundMusic');
+                music.volume = 0.3;
+                music.play().catch(err => {
+                    console.log('Music file not found - placeholder only');
+                });
+            }, 500);
+        });
+        
+        // Reset No button when hovering or focusing on Yes button (Phase 2)
+        yes2Button.addEventListener('mouseenter', function() {
+            if (no2Button && no2Button.resetToOriginal) {
+                no2Button.resetToOriginal();
+            }
+        });
+        
+        yes2Button.addEventListener('focus', function() {
+            if (no2Button && no2Button.resetToOriginal) {
+                no2Button.resetToOriginal();
+            }
+        });
+    </script>
+</body>
+</html>
