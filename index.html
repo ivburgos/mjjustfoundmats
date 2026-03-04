@@ -26,8 +26,13 @@
             text-align: center;
             padding: 40px;
             max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
             z-index: 10;
-            position: relative;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
             border: none;
             border-radius: 20px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
@@ -39,11 +44,11 @@
         @keyframes slideInFromBottom {
             from {
                 opacity: 0;
-                transform: translateY(50px);
+                transform: translate(-50%, calc(-50% + 50px));
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate(-50%, -50%);
             }
         }
 
@@ -337,24 +342,25 @@
         .phase-2 {
             display: none;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translate(-50%, calc(-50% + 20px));
         }
 
         .phase-2.active {
             display: block;
             opacity: 1;
-            transform: translateY(0);
+            transform: translate(-50%, -50%);
         }
 
         .phase-1 {
             display: block;
             opacity: 1;
-            transform: translateY(0);
+            transform: translate(-50%, -50%);
         }
 
         .phase-1.hidden {
+            display: none;
             opacity: 0;
-            transform: translateY(-20px);
+            transform: translate(-50%, calc(-50% - 20px));
         }
 
         /* Floating hearts animation */
