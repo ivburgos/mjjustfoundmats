@@ -1186,14 +1186,8 @@
             }, 500);
         });
         
-        // Reset No button when hovering or focusing on Yes button (Phase 1)
+        // Reset No button when hovering on Yes button (Phase 1)
         yes1Button.addEventListener('mouseenter', function() {
-            if (no1Button && no1Button.resetToOriginal) {
-                no1Button.resetToOriginal();
-            }
-        });
-        
-        yes1Button.addEventListener('focus', function() {
             if (no1Button && no1Button.resetToOriginal) {
                 no1Button.resetToOriginal();
             }
@@ -1227,14 +1221,8 @@
             }, 500);
         });
         
-        // Reset No button when hovering or focusing on Yes button (Phase 2)
+        // Reset No button when hovering on Yes button (Phase 2)
         yes2Button.addEventListener('mouseenter', function() {
-            if (no2Button && no2Button.resetToOriginal) {
-                no2Button.resetToOriginal();
-            }
-        });
-        
-        yes2Button.addEventListener('focus', function() {
             if (no2Button && no2Button.resetToOriginal) {
                 no2Button.resetToOriginal();
             }
